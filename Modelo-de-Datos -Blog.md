@@ -93,9 +93,3 @@ Guarda los likes de los usuarios en los posts.
 | `created_at` | `TIMESTAMP` | Fecha del like |
 
 ---
-
-### 🔹 **Consideraciones de SEO y autenticación**
-
-- `slug` en `Post`, `Category` y `Tag` para URLs amigables.  
-- `meta_title` y `meta_desc` en `Post` para SEO.  
-- Integración de autenticación con Google y tradicional.  
