@@ -3,7 +3,7 @@ package io.github.angel.raa.utils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NormalizeTest {
 
@@ -14,6 +14,7 @@ class NormalizeTest {
         String slug = Normalize.slugify(input);
         assertEquals("hello-world", slug);
     }
+
     @DisplayName("Test Slug with non-latin characters")
     @Test
     void slugifyWithNonLatinCharacters() {
