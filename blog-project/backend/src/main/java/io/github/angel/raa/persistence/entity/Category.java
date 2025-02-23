@@ -16,9 +16,9 @@ public class Category {
     @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID categoryId;
-    @Column(length = 80, nullable = false)
+    @Column(length = 80, nullable = false, unique = true)
     private String name;
-    @Column(name ="slug", length = 80, nullable = false, unique = true)
+    @Column(name = "slug", length = 80, nullable = false, unique = true)
     private String slug;
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

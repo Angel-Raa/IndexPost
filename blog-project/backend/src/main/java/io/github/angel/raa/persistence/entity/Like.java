@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name ="likes_table",
-uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"fk_user_id", "fk_post_id"})
-})
+@Table(name = "likes_table",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"fk_user_id", "fk_post_id"})
+        })
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,7 +29,7 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_post_id", referencedColumnName = "post_id", insertable = false, updatable = false)
     private Post post;
-    @Column(name ="created_at")
+    @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 

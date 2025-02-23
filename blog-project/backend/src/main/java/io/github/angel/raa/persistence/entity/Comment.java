@@ -15,11 +15,11 @@ public class Comment {
     @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID commentId;
-    @Column(name = "fk_user_id", updatable = true , insertable = true)
+    @Column(name = "fk_user_id", updatable = true, insertable = true)
     private UUID userId;
     @Column(name = "fk_post_id", updatable = true, insertable = true)
     private UUID postId;
-    @Column(name= "content", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
     @ManyToOne
     @JsonBackReference

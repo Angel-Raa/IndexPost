@@ -20,7 +20,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "post_id")
     private UUID postId;
-    @Column(name ="fk_user_id", updatable = true , insertable = true)
+    @Column(name = "fk_user_id", updatable = true, insertable = true)
     private UUID userId;
     @Column(name = "fk_category_id", updatable = true, insertable = true)
     private UUID categoryId;
@@ -32,7 +32,7 @@ public class Post {
     private String content;
     @Column(name = "thumbnail", length = 200)
     private String thumbnail;
-    @Column(name ="meta_title", length = 180)
+    @Column(name = "meta_title", length = 180)
     private String metaTitle;
     @Column(name = "meta_description", length = 200)
     private String metaDescription;
