@@ -25,7 +25,9 @@ public class User {
     private boolean isVerified;
     @Column(nullable = false)
     private String password;
+    @Column(name = "google_id", unique = true)
     private String googleId;
+    private String avatar;
     @Enumerated(EnumType.STRING)
     private Authorities role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -47,18 +49,19 @@ public class User {
     public User() {
     }
 
-    public User(String email, UUID userId, String name, boolean isVerified, String password, String googleId, Authorities role, Set<Comment> comments, Set<Post> posts, Set<Like> likes, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.email = email;
+    public User(UUID userId, boolean isVerified, String name, String email, String password, String googleId, String avatar, Authorities role, Set<Comment> comments, Set<Post> posts, LocalDateTime createdAt, Set<Like> likes, LocalDateTime updatedAt) {
         this.userId = userId;
-        this.name = name;
         this.isVerified = isVerified;
+        this.name = name;
+        this.email = email;
         this.password = password;
         this.googleId = googleId;
+        this.avatar = avatar;
         this.role = role;
         this.comments = comments;
         this.posts = posts;
-        this.likes = likes;
         this.createdAt = createdAt;
+        this.likes = likes;
         this.updatedAt = updatedAt;
     }
 
@@ -152,6 +155,14 @@ public class User {
 
     public Set<Like> getLikes() {
         return likes;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public void setLikes(Set<Like> likes) {
