@@ -27,6 +27,4 @@ public interface CategoryRepository extends BaseJpaRepository<Category, UUID>, P
     @Query(value = "UPDATE Post p SET p.categoryId =:categoryId WHERE p.postId = :postId")
     void assignCategoryToPost(@Param("postId") UUID postId, @Param("categoryId") UUID categoryId);
 
-    @Query("SELECT COUNT(p) FROM Post WHERE p.categoryId = :categoryId")
-    long countPostByCategoryId(@Param("categoryId") UUID categoryId);
 }
