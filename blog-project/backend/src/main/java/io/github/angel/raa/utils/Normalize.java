@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * String input = "Hello World!";
  * String slug = Normalize.slugify(input);
  * System.out.println(slug);
+ * out: hello-world
  *
  * }
  * </pre>
@@ -23,6 +24,11 @@ public class Normalize {
     private static final Pattern WHITESPACE = Pattern.compile("[\\s]");
     private static final Pattern EDGESDASHES = Pattern.compile("(^-|-$)");
 
+    /**
+     * Normalizes a string for use in URLs or file names.
+     *
+     * @param input The string to normalize.
+     */
     public static String slugify(String input) {
         String nowhitespace = WHITESPACE.matcher(input).replaceAll("-");
         String normalized = java.text.Normalizer.normalize(nowhitespace, java.text.Normalizer.Form.NFD);
@@ -30,4 +36,5 @@ public class Normalize {
         slug = EDGESDASHES.matcher(slug).replaceAll("");
         return slug.toLowerCase();
     }
+
 }
