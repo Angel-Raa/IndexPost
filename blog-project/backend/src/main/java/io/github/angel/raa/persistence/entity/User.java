@@ -1,7 +1,6 @@
 package io.github.angel.raa.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -35,10 +34,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, targetEntity = Comment.class)
     @JsonManagedReference
     private Set<Comment> comments = new HashSet<>();
-    @OneToMany(mappedBy = "user", cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JsonManagedReference
     private Set<Post> posts = new HashSet<>();
-    @OneToMany(mappedBy = "user", cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JsonManagedReference
     private Set<Like> likes = new HashSet<>();
     @CreationTimestamp
@@ -132,16 +131,16 @@ public class User {
         return likes;
     }
 
+    public void setLikes(Set<Like> likes) {
+        this.likes = likes;
+    }
+
     public String getAvatar() {
         return avatar;
     }
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public void setLikes(Set<Like> likes) {
-        this.likes = likes;
     }
 
     public List<Token> getTokens() {
