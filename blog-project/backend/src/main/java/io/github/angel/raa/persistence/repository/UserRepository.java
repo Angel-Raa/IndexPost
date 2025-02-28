@@ -2,7 +2,9 @@ package io.github.angel.raa.persistence.repository;
 
 import io.github.angel.raa.persistence.entity.User;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -15,7 +17,8 @@ public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAnd
     boolean existsByEmail(final String email);
     Optional<User> findByName(final String name);
     // Encontrar usuario por token de recuperación de contraseña
-    Optional<User> findByTokens_TokenValue(final String tokenValue);
+    @Query("SELECT u FROM User u JOIN u.tokens t WHERE t.tokenValue = :tokenValue")
+    Optional<User> findByTokensTokenValue(final @Param("tokenValue") String tokenValue);
     // Encontrar usuarios no verificados
     boolean existsByIsVerifiedFalse();
     // Encontrar usuarios verificados
