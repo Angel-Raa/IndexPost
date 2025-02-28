@@ -1,7 +1,6 @@
 package io.github.angel.raa.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import io.github.angel.raa.utils.Authorities;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -28,9 +27,17 @@ public class User {
     @Column(name = "google_id", unique = true)
     private String googleId;
     private String avatar;
-    @Enumerated(EnumType.STRING)
-    private Authorities role;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Role.class)
+    @JoinTable(
+            name = "fk_user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Role role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = Token.class)
+    @JsonManagedReference
+    private Set<Token> tokens = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = Comment.class)
     @JsonManagedReference
     private Set<Comment> comments = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -45,25 +52,6 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    public User() {
-    }
-
-    public User(UUID userId, boolean isVerified, String name, String email, String password, String googleId, String avatar, Authorities role, Set<Comment> comments, Set<Post> posts, LocalDateTime createdAt, Set<Like> likes, LocalDateTime updatedAt) {
-        this.userId = userId;
-        this.isVerified = isVerified;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.googleId = googleId;
-        this.avatar = avatar;
-        this.role = role;
-        this.comments = comments;
-        this.posts = posts;
-        this.createdAt = createdAt;
-        this.likes = likes;
-        this.updatedAt = updatedAt;
-    }
 
     public UUID getUserId() {
         return userId;
@@ -103,14 +91,6 @@ public class User {
 
     public void setGoogleId(String googleId) {
         this.googleId = googleId;
-    }
-
-    public Authorities getRole() {
-        return role;
-    }
-
-    public void setRole(Authorities role) {
-        this.role = role;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -167,5 +147,13 @@ public class User {
 
     public void setLikes(Set<Like> likes) {
         this.likes = likes;
+    }
+
+    public Set<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(Set<Token> tokens) {
+        this.tokens = tokens;
     }
 }
