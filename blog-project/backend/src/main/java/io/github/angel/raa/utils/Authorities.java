@@ -1,6 +1,5 @@
 package io.github.angel.raa.utils;
 
-import java.util.List;
 import java.util.Set;
 
 public enum Authorities {

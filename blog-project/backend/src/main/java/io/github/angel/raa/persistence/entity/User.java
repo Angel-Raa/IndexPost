@@ -1,14 +1,13 @@
 package io.github.angel.raa.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "users_table")
@@ -21,29 +20,25 @@ public class User {
     private String name;
     @Column(unique = true, length = 50)
     private String email;
-    private boolean isVerified;
+    private boolean isVerified = false;
     @Column(nullable = false)
     private String password;
     @Column(name = "google_id", unique = true)
     private String googleId;
     private String avatar;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Role.class)
-    @JoinTable(
-            name = "fk_user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, targetEntity = Role.class)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = Token.class)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = Token.class)
     @JsonManagedReference
-    private Set<Token> tokens = new HashSet<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = Comment.class)
+    private List<Token> tokens = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, targetEntity = Comment.class)
     @JsonManagedReference
     private Set<Comment> comments = new HashSet<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JsonManagedReference
     private Set<Post> posts = new HashSet<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JsonManagedReference
     private Set<Like> likes = new HashSet<>();
     @CreationTimestamp
@@ -149,11 +144,19 @@ public class User {
         this.likes = likes;
     }
 
-    public Set<Token> getTokens() {
+    public List<Token> getTokens() {
         return tokens;
     }
 
-    public void setTokens(Set<Token> tokens) {
+    public void setTokens(List<Token> tokens) {
         this.tokens = tokens;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
