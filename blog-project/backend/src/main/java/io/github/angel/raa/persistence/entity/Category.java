@@ -20,6 +20,7 @@ public class Category {
     private String name;
     @Column(name = "slug", length = 80, nullable = false, unique = true)
     private String slug;
+    private boolean enabled;
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Post> posts = new ArrayList<>();
@@ -29,18 +30,6 @@ public class Category {
     @CreationTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    public Category() {
-    }
-
-    public Category(UUID categoryId, String name, String slug, List<Post> posts, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.categoryId = categoryId;
-        this.name = name;
-        this.slug = slug;
-        this.posts = posts;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 
     public UUID getCategoryId() {
         return categoryId;
@@ -84,6 +73,14 @@ public class Category {
 
     public List<Post> getPosts() {
         return posts;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setPosts(List<Post> posts) {

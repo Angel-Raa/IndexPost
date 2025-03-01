@@ -1,7 +1,10 @@
 package io.github.angel.raa.persistence.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,18 +20,16 @@ public class Tag {
     private String name;
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
+    private boolean enabled;
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private Set<Post> posts = new HashSet<>();
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    public Tag() {
-    }
-
-    public Tag(UUID tagId, String name, String slug, Set<Post> posts) {
-        this.tagId = tagId;
-        this.name = name;
-        this.slug = slug;
-        this.posts = posts;
-    }
 
     public UUID getTagId() {
         return tagId;
@@ -60,5 +61,29 @@ public class Tag {
 
     public void setPosts(Set<Post> posts) {
         this.posts = posts;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

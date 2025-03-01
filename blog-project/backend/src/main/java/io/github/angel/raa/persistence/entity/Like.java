@@ -33,17 +33,6 @@ public class Like {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public Like() {
-    }
-
-    public Like(UUID likeId, UUID userId, UUID postId, User user, Post post, LocalDateTime createdAt) {
-        this.likeId = likeId;
-        this.userId = userId;
-        this.postId = postId;
-        this.user = user;
-        this.post = post;
-        this.createdAt = createdAt;
-    }
 
     public UUID getLikeId() {
         return likeId;

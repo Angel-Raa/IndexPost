@@ -14,10 +14,6 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private Authorities authorities;
 
-    public Role(UUID roleId, Authorities authorities) {
-        this.roleId = roleId;
-        this.authorities = authorities;
-    }
 
     public UUID getRoleId() {
         return roleId;

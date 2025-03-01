@@ -21,6 +21,8 @@ public class Comment {
     private UUID postId;
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "fk_user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
@@ -36,18 +38,12 @@ public class Comment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Comment() {
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public Comment(UUID userId, UUID commentId, UUID postId, User user, String content, Post post, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.userId = userId;
-        this.commentId = commentId;
-        this.postId = postId;
-        this.user = user;
-        this.content = content;
-        this.post = post;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public UUID getCommentId() {
