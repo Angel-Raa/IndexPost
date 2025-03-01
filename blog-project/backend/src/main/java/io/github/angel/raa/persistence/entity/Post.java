@@ -66,8 +66,6 @@ public class Post {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Post() {
-    }
 
     public UUID getPostId() {
         return postId;
