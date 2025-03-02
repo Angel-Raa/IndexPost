@@ -2,6 +2,7 @@ package io.github.angel.raa.persistence.repository;
 
 import io.github.angel.raa.persistence.entity.User;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -12,13 +13,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAndSortingRepository<User, UUID> {
+public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAndSortingRepository<User, UUID>, JpaRepository<User, UUID> {
     Optional<User> findByEmail(final String email);
     Optional<User> findByGoogleId(final String googleId);
     boolean existsByEmail(final String email);
     Optional<User> findByName(final String name);
     boolean existsByIsVerifiedFalse();
     boolean existsByIsVerifiedTrue();
+
 
     /**
      * Verificación de correo electrónico
@@ -27,12 +29,6 @@ public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAnd
     boolean verifyEmail(@Param("email") String email);
 
 
-    /**
-     * Asignación de roles: Buscar usuario por ID y actualizar su rol
-     */
-    @Modifying
-    @Query("UPDATE User u SET u.role =:role WHERE u.userId =:userId")
-    void assignRole(@Param("userId") UUID userId, @Param("role") String role);
 
     /**
      * Verificar si la cuenta está bloqueada

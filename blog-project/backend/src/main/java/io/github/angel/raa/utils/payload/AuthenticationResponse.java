@@ -2,18 +2,20 @@ package io.github.angel.raa.utils.payload;
 
 import io.github.angel.raa.utils.TokenType;
 
-public class AuthenticateResponse {
+public class AuthenticationResponse {
     private String accessToken;
     private String refreshToken;
-    private TokenType tokenType =  TokenType.BEARER;
+    private TokenType tokenType ;
+    private String message;
 
-    public AuthenticateResponse() {
+    public AuthenticationResponse() {
     }
 
-    public AuthenticateResponse(String refreshToken, String accessToken, TokenType tokenType) {
-        this.refreshToken = refreshToken;
+    public AuthenticationResponse(String accessToken, String refreshToken, TokenType tokenType, String message) {
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.tokenType = tokenType;
+        this.message = message;
     }
 
     public String getAccessToken() {
@@ -38,5 +40,13 @@ public class AuthenticateResponse {
 
     public void setTokenType(TokenType tokenType) {
         this.tokenType = tokenType;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -4,6 +4,6 @@ import java.util.UUID;
 
 public interface AuthenticationVerificationService {
     void sendVerificationEmailToUser(final UUID userId);
-    boolean verifyUserEmail(String verificationToken, UUID userId);
+    boolean verifyUserEmail(String verificationToken);
 
 }

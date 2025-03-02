@@ -1,22 +1,20 @@
 package io.github.angel.raa.persistence.repository;
 
 import io.github.angel.raa.persistence.entity.Token;
-import io.github.angel.raa.persistence.entity.User;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface TokenRepository extends BaseJpaRepository<Token, UUID> {
+public interface TokenRepository extends BaseJpaRepository<Token, UUID>, PagingAndSortingRepository<Token, UUID> {
     Optional<Token> findByTokenValue(final String tokenValue);
-    List<Token> findAllByUserAndExpiredFalseAndRevokedFalse(User user);
     void deleteByExpiresAtBefore(LocalDateTime now);
 
     /**

@@ -19,11 +19,12 @@ public class EmailServiceImpl implements EmailService {
         String subject = "Verificación de correo electrónico";
         String body = "Por favor, haga clic en el siguiente enlace para verificar su correo electrónico: "
                 + "http://localhost:8080/api/v1/verification/verify?token=" + verificationToken;
+
         message.setTo(toEmail);
         message.setSubject(subject);
         message.setText(body);
-        sender.send(message);
 
+        sender.send(message);
     }
 
     @Override

@@ -18,6 +18,8 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID userId;
+    @Column(name = "fk_role_id", insertable = true, updatable = true)
+    private UUID roleId;
     @Column(unique = true, length = 50)
     private String name;
     @Column(unique = true, length = 50)
@@ -28,21 +30,21 @@ public class User implements UserDetails {
     @Column(name = "google_id", unique = true)
     private String googleId;
     private String avatar;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, targetEntity = Role.class)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    @ManyToOne(fetch = FetchType.EAGER, cascade =CascadeType.ALL, targetEntity = Role.class)
+    @JoinColumn(name = "fk_role_id", insertable = false, updatable = false, referencedColumnName = "user_id",  nullable = false)
+    private transient Role role;
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = Token.class)
     @JsonManagedReference
-    private List<Token> tokens = new ArrayList<>();
+    private transient List<Token> tokens = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, targetEntity = Comment.class)
     @JsonManagedReference
-    private Set<Comment> comments = new HashSet<>();
+    private transient Set<Comment> comments = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Post> posts = new HashSet<>();
+    private transient Set<Post> posts = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Like> likes = new HashSet<>();
+    private transient Set<Like> likes = new HashSet<>();
     @Column(name = "failed_attempts")
     private int failedAttempts = 0;
     @Column(name = "account_locked")
@@ -220,5 +222,13 @@ public class User implements UserDetails {
 
     public void setLockTime(LocalDateTime lockTime) {
         this.lockTime = lockTime;
+    }
+
+    public UUID getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(UUID roleId) {
+        this.roleId = roleId;
     }
 }

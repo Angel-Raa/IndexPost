@@ -4,6 +4,8 @@ package io.github.angel.raa.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtils {
+    private static final Logger log = LoggerFactory.getLogger(JwtUtils.class);
     @Value("${app.jwt.secret}")
     private String secretKey;
     @Value("${app.jwt.expiration.access}")
@@ -49,6 +52,8 @@ public class JwtUtils {
      * @return token
      */
     private String generateToken(String email, long expiration) {
+        log.info("Generating token for email: {}", email);
+        log.info("Expiration time: {} milliseconds", expiration);
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -95,7 +100,7 @@ public class JwtUtils {
     /**
      * Valida el token
      */
-    public  Boolean validateToken( final String token, final String email) {
+    public  boolean validateToken( final String token, final String email) {
         final String userEmail = extractEmail(token);
         return (userEmail.equals(email) && !isTokenExpired(token));
     }

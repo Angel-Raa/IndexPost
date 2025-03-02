@@ -17,8 +17,10 @@ public class VerificationController {
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<String> verifyUser(@RequestParam(value = "token", name = "token", required = true) final String token) {
-
+    public ResponseEntity<String> verifyUser(@RequestParam(value = "token", name = "token") final String token) {
+        if(!service.verifyUserEmail(token)){
+            return ResponseEntity.badRequest().body("Token no valido");
+        }
         return ResponseEntity.ok("Usuario verificado exitosamente");
     }
 }
