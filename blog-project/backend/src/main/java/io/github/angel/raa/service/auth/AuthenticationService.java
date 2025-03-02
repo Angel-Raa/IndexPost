@@ -7,8 +7,10 @@ import io.github.angel.raa.dto.auth.Register;
 public interface AuthenticationService {
     AuthenticationResponse register(Register request);
 
-    AuthenticationResponse authenticate(Login request);
-    AuthenticationResponse authenticate(String token);
-    AuthenticationResponse authenticate(String token, String refreshToken);
+    AuthenticationResponse login(Login request);
+    AuthenticationResponse  verifyEmail(String verificationToken, String userId);
+    AuthenticationResponse refreshToken(String refreshToken);
+    AuthenticationResponse logout(String refreshToken);
+
 
 }
