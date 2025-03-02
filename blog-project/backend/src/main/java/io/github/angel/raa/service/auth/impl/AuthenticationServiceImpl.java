@@ -15,7 +15,7 @@ import io.github.angel.raa.utils.Authorities;
 import io.github.angel.raa.utils.JwtUtils;
 import io.github.angel.raa.utils.TokenType;
 import io.github.angel.raa.utils.payload.AuthenticationResponse;
-
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -49,10 +49,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Transactional
     @Override
-    public AuthenticationResponse register(Register request) {
-        log.info("Register: {}", request);
-        final String email = request.getEmail();
-        final String password = request.getPassword();
+    public AuthenticationResponse register(Register request) throws MessagingException {
+        log.info("Register Service: {}", request);
+        final String email = request.getEmail().trim();
+        final String password = request.getPassword().trim();
         final String name = request.getName();
         if (userRepository.existsByEmail(email)) {
             throw new EmailAlreadyExistsException("Email already exists");
@@ -63,6 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         role.setAuthorities(Authorities.USER);
         roleRepository.persist(role);
         log.info("Role persisted successfully: {}", role.getAuthorities());
+        log.info("Role Id: {}", role.getRoleId());
 
         // Crear un nuevo usuario
         User user = new User();
@@ -70,20 +71,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(passwordEncoder.encode(password));
         user.setName(name);
         user.setVerified(false);
-        user.setRoleId(role.getRoleId());
+        user.setRoleId(role.getRoleId()); // Asigna el objeto Role directamente
+        userRepository.persist(user); // Primero se persiste el usuario
+        log.info("User persisted successfully: {}", user.getEmail());
 
-        // Guardar el usuario en la base de datos
-        userRepository.persist(user);
-
-        log.info("User persisted successfully: {}", user.getUserId());
-
-        // TODO: SOLUCIONA BUG
         // Generar tokens de acceso y refresco
         String accessToken = jwtUtils.generateAccessToken(email);
-        String refreshToken = jwtUtils.generateRefreshToken(email);
         log.info("Access token generated: {}", accessToken);
+
+        String refreshToken = jwtUtils.generateRefreshToken(email);
         log.info("Refresh token generated: {}", refreshToken);
 
+        // Enviar correo de verificación
+        authenticationVerificationService.sendVerificationEmailToUser(user.getUserId());
         // Crear y persistir el token
         Token token = new Token();
         token.setTokenValue(UUID.randomUUID().toString());
@@ -91,19 +91,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         token.setRevoked(false);
         token.setExpired(false);
         token.setExpiresAt(LocalDateTime.now().plusHours(1));
-        token.setUserId(user.getUserId());
+        token.setUserId(user.getUserId()); // Asignar el usuario al token
 
-        try {
-            log.info("Attempting to persist token: {}", token);
-            tokenRepository.persist(token);
-            log.info("Token persisted successfully: {}", token.getTokenValue());
-        } catch (Exception e) {
-            log.error("Failed to persist token: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to persist token", e);
-        }
+        log.info("Attempting to persist token: {}", token);
+        tokenRepository.persist(token); // Luego se persiste el token
+        log.info("Token persisted successfully: {}", token.getTokenValue());
 
-        return new AuthenticationResponse(accessToken, refreshToken, TokenType.BEARER, "Usuario registrado exitosamente.");
+        return new AuthenticationResponse(accessToken, refreshToken, TokenType.BEARER, "Usuario registrado exitosamente. Por favor verifique su correo para confimar");
     }
+
     @Override
     public AuthenticationResponse login(Login request) {
         return null;

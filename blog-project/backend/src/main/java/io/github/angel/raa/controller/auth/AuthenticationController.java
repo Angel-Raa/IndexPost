@@ -3,6 +3,7 @@ package io.github.angel.raa.controller.auth;
 import io.github.angel.raa.dto.auth.Register;
 import io.github.angel.raa.service.auth.AuthenticationService;
 import io.github.angel.raa.utils.payload.AuthenticationResponse;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +26,13 @@ public class AuthenticationController {
 
     }
     @PreAuthorize("permitAll")
+    @GetMapping
+    public String hello(){
+        return "Hello World";
+    }
+    @PreAuthorize("permitAll")
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody Register register){
-
-        log.info("Register: {}", register);
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody Register register) throws MessagingException {
         AuthenticationResponse response = service.register(register);
         log.info("Response: {}", response);
         return new ResponseEntity<>(response,  HttpStatus.OK);

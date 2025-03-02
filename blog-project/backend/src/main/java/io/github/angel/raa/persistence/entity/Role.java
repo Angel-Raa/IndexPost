@@ -10,7 +10,9 @@ import java.util.UUID;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "role_id")
     private UUID roleId;
+    @Column(name = "authorities")
     @Enumerated(EnumType.STRING)
     private Authorities authorities;
 

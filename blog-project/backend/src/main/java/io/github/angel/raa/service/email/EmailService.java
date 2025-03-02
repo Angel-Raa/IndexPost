@@ -1,6 +1,8 @@
 package io.github.angel.raa.service.email;
 
+import jakarta.mail.MessagingException;
+
 public interface EmailService {
-    public void sendVerificationEmail(final String toEmail, final String verificationToken);
-    public void sendPasswordResetEmail(final String toEmail, final String resetToken);
+     void sendVerificationEmail(final String toEmail, final String verificationToken) throws MessagingException;
+     void sendPasswordResetEmail(final String toEmail, final String resetToken);
 }

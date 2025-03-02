@@ -52,8 +52,6 @@ public class JwtUtils {
      * @return token
      */
     private String generateToken(String email, long expiration) {
-        log.info("Generating token for email: {}", email);
-        log.info("Expiration time: {} milliseconds", expiration);
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))

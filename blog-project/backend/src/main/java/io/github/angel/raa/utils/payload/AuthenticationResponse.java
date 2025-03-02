@@ -49,4 +49,14 @@ public class AuthenticationResponse {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "AuthenticationResponse{" +
+                "accessToken='" + accessToken + '\'' +
+                ", refreshToken='" + refreshToken + '\'' +
+                ", tokenType=" + tokenType +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

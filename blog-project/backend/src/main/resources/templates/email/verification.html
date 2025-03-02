@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de correo electrónico</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center;">
+<table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center">
+            <table width="600px" style="background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+                <tr>
+                    <td align="center">
+                        <h1 style="color: #007bff;">Verificación de correo electrónico</h1>
+                        <p style="font-size: 16px; color: #333;">Haga clic en el siguiente botón para verificar su correo electrónico:</p>
+                        <a th:href="${verificationLink}"
+                           style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff; background-color: #28a745; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+                            Verificar correo electrónico
+                        </a>
+                        <p style="margin-top: 20px; font-size: 14px; color: #666;">Si no solicitó este correo, puede ignorarlo.</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

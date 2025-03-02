@@ -1,5 +1,6 @@
 package io.github.angel.raa.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.github.angel.raa.utils.TokenType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,7 +14,7 @@ public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID tokenId;
-    @Column(name = "fk_user_id")
+    @Column(name = "fk_user_id",  nullable = false,  updatable = true, insertable = true)
     private UUID userId;
     @Column(unique = true, nullable = false, name = "token")
     private String tokenValue;
@@ -21,6 +22,10 @@ public class Token {
     private TokenType tokenType = TokenType.BEARER;
     private boolean revoked;
     private boolean expired;
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "fk_user_id", insertable = false, updatable = false)
+    private User user;
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -35,13 +40,6 @@ public class Token {
         this.tokenId = tokenId;
     }
 
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
 
     public String getTokenValue() {
         return tokenValue;
@@ -90,5 +88,21 @@ public class Token {
 
     public void setExpiresAt(LocalDateTime expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 }

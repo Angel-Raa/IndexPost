@@ -18,7 +18,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID userId;
-    @Column(name = "fk_role_id", insertable = true, updatable = true)
+    @Column(name = "fk_role_id", insertable = true, updatable = false)
     private UUID roleId;
     @Column(unique = true, length = 50)
     private String name;
@@ -30,10 +30,10 @@ public class User implements UserDetails {
     @Column(name = "google_id", unique = true)
     private String googleId;
     private String avatar;
-    @ManyToOne(fetch = FetchType.EAGER, cascade =CascadeType.ALL, targetEntity = Role.class)
-    @JoinColumn(name = "fk_role_id", insertable = false, updatable = false, referencedColumnName = "user_id",  nullable = false)
-    private transient Role role;
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = Token.class)
+    @ManyToOne(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @JoinColumn(name = "fk_role_id",  insertable = false, updatable = false)
+    private Role role;
+    @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = Token.class)
     @JsonManagedReference
     private transient List<Token> tokens = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, targetEntity = Comment.class)
@@ -57,6 +57,9 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public User() {
+    }
 
     public UUID getUserId() {
         return userId;
@@ -222,6 +225,10 @@ public class User implements UserDetails {
 
     public void setLockTime(LocalDateTime lockTime) {
         this.lockTime = lockTime;
+    }
+
+    public void addToken(Token token) {
+        this.tokens.add(token);
     }
 
     public UUID getRoleId() {
