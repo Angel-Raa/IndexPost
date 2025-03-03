@@ -2,7 +2,12 @@ package io.github.angel.raa.utils.payload;
 
 import io.github.angel.raa.utils.TokenType;
 
-public class AuthenticationResponse {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class AuthenticationResponse implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -1324687123687936281L;
     private String accessToken;
     private String refreshToken;
     private TokenType tokenType ;

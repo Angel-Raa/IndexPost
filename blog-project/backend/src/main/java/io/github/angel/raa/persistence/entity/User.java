@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private String avatar;
     @ManyToOne(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     @JoinColumn(name = "fk_role_id",  insertable = false, updatable = false)
-    private Role role;
+    private transient Role role;
     @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = Token.class)
     @JsonManagedReference
     private transient List<Token> tokens = new ArrayList<>();
@@ -58,8 +58,7 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public User() {
-    }
+    public User() {}
 
     public UUID getUserId() {
         return userId;
@@ -87,7 +86,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-       if(role == null) return null;
+       if(role == null) return Collections.emptyList();
        if(role.getAuthorities().getPermissions() == null) return Collections.EMPTY_LIST;
        return role.getAuthorities().getPermissions()
                .stream().map(Enum::name)

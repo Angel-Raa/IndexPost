@@ -1,22 +1,23 @@
 package io.github.angel.raa.utils;
 
 
+import io.github.angel.raa.persistence.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
 public class JwtUtils {
-    private static final Logger log = LoggerFactory.getLogger(JwtUtils.class);
     @Value("${app.jwt.secret}")
     private String secretKey;
     @Value("${app.jwt.expiration.access}")
@@ -34,15 +35,15 @@ public class JwtUtils {
     /**
      * Genera el access token
      */
-    public  String generateAccessToken (String email){
-        return  generateToken(email, accessExpiration);
+    public  String generateAccessToken (String email, Map<String, Object> extraClaims){
+        return  generateToken(email, accessExpiration, extraClaims);
     }
 
     /**
      * Genera el refresh token
      */
-    public String generateRefreshToken(String email){
-        return generateToken(email, refreshExpiration);
+    public String generateRefreshToken(String email, Map<String, Object> extraClaims){
+        return generateToken(email, refreshExpiration, extraClaims);
     }
 
     /**
@@ -51,8 +52,9 @@ public class JwtUtils {
      * @param expiration tiempo de expiracion
      * @return token
      */
-    private String generateToken(String email, long expiration) {
+    private String generateToken(String email, long expiration, Map<String, Object> extraClaims) {
         return Jwts.builder()
+                .claims(extraClaims)
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
@@ -60,6 +62,13 @@ public class JwtUtils {
                 .compact();
     }
 
+    public Map<String, Object>  generateExtraClaims(User details){
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("email", details.getUsername());
+        extraClaims.put("roles",details.getRole());
+        extraClaims.put("Authorities", details.getAuthorities());
+        return extraClaims;
+    }
 
     /**
      * Extrae el email

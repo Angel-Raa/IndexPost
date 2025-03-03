@@ -2,7 +2,6 @@ package io.github.angel.raa.persistence.repository;
 
 import io.github.angel.raa.persistence.entity.User;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -13,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAndSortingRepository<User, UUID>, JpaRepository<User, UUID> {
+public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAndSortingRepository<User, UUID> {
     Optional<User> findByEmail(final String email);
     Optional<User> findByGoogleId(final String googleId);
     boolean existsByEmail(final String email);
@@ -27,7 +26,6 @@ public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAnd
      */
     @Query("UPDATE User u SET u.isVerified = true WHERE u.email =:email")
     boolean verifyEmail(@Param("email") String email);
-
 
 
     /**
@@ -44,24 +42,39 @@ public interface UserRepository extends BaseJpaRepository<User, UUID>, PagingAnd
      * @param email correo electrónico
      */
     @Modifying
-    @Query("UPDATE User u SET u.failedAttempts = 0 WHERE u.email =:email")
+    @Query("UPDATE User u SET u.failedAttempts = 0, u.accountLocked = false, u.lockTime = null WHERE u.email =:email")
     void resetFailedAttempts(@Param("email") String email);
 
     /**
      * Bloquear la cuenta
      */
     @Modifying
-    @Query("UPDATE User u SET u.accountLocked = true, u.lockTime = CURRENT_TIMESTAMP WHERE u.email =:email")
+    @Query("UPDATE User u SET u.accountLocked = true, u.lockTime = CURRENT_TIMESTAMP() WHERE u.email =:email")
     void lock(@Param("email") String email);
+
+    @Modifying
+    @Query("UPDATE User u SET u.accountLocked = true, u.lockTime = CURRENT_TIMESTAMP(), u.failedAttempts = :failedAttempts WHERE u.email = :email")
+    void lock(@Param("email") String email, @Param("failedAttempts") int failedAttempts);
 
     /**
      * Incrementar el contador de intentos fallidos
      *
      * @param email correo electrónico
      */
+
     @Modifying
-    @Query("UPDATE User u SET u.failedAttempts = u.failedAttempts + 1 WHERE u.email =:email")
-    void increaseFailedAttempts(@Param("email") String email);
+    @Query(value = "UPDATE users_table SET failed_attempts = failed_attempts + 1 WHERE email = :email", nativeQuery = true)
+    int increaseFailedAttempts(@Param("email") String email);
 
+    /**
+     * Desbloquear la cuenta
+     *
+     * @param email correo electrónico
+     */
+    @Modifying
+    @Query("UPDATE User u SET u.accountLocked = false, u.lockTime = null, u.failedAttempts = 0 WHERE u.email =:email")
+    void unLock(@Param("email") String email);
 
+    @Query("SELECT u.failedAttempts FROM User u WHERE u.email =:email")
+    int findFailedAttempts(@Param("email") String email);
 }
